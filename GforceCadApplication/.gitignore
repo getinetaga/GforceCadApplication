@@ -1,0 +1,9 @@
+build/
+out/
+.vscode/
+.idea/
+*.user
+*.user.*
+*.autosave
+.DS_Store
+Thumbs.db
