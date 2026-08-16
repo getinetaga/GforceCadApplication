@@ -33,6 +33,16 @@ std::shared_ptr<Entity> Entity::fromJson(const QJsonObject& o)
         );
     }
 
+    if (type == "ELLIPSE") {
+        return std::make_shared<EllipseEntity>(
+            id,
+            Vec2{o["cx"].toDouble(), o["cy"].toDouble()},
+            o["semiMajor"].toDouble(),
+            o["semiMinor"].toDouble(),
+            layer
+        );
+    }
+
     if (type == "ARC") {
         return std::make_shared<ArcEntity>(
             id,

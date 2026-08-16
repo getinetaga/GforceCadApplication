@@ -612,6 +612,30 @@ bool ToolController::click(const Vec2& point)
         }
         return true;
 
+    case ToolType::Ellipse:
+        m_points.append(point);
+
+        if (m_points.size() == 3) {
+            const Vec2 center = m_points[0];
+            const double semiMajor = std::abs(m_points[1].x - center.x);
+            const double semiMinor = std::abs(m_points[2].y - center.y);
+
+            if (semiMajor > 1e-6 && semiMinor > 1e-6) {
+                m_document.add(
+                    std::make_shared<EllipseEntity>(
+                        m_document.nextId(),
+                        center,
+                        semiMajor,
+                        semiMinor,
+                        m_document.currentLayer()
+                    )
+                );
+            }
+
+            m_points.clear();
+        }
+        return true;
+
     case ToolType::Arc:
         m_points.append(point);
 
@@ -1069,6 +1093,10 @@ QString ToolController::prompt() const
         return m_points.isEmpty() ? "Specify first point" : "Specify second point";
     case ToolType::Circle:
         return m_points.isEmpty() ? "Specify center" : "Specify radius";
+    case ToolType::Ellipse:
+        if (m_points.isEmpty()) return "Specify center";
+        if (m_points.size() == 1) return "Specify major radius";
+        return "Specify minor radius";
     case ToolType::Arc:
         if (m_points.isEmpty()) return "Specify center";
         if (m_points.size() == 1) return "Specify start point";

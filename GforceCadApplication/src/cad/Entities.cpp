@@ -108,10 +108,68 @@ void CircleEntity::moveBy(const Vec2& delta)
 
 QString CircleEntity::properties() const
 {
-    return QString("CIRCLE\nID: %1\nLayer: %2\nCenter: (%3, %4)\nRadius: %5\nDiameter: %6")
+    return QString("CIRCLE\nID: %1\nLayer: %2\nCenter: (%3, %4)\nRadius: %5\nDiameter: %6\nCircumference: %7\nArea: %8")
         .arg(id()).arg(layer())
         .arg(m_center.x, 0, 'f', 3).arg(m_center.y, 0, 'f', 3)
-        .arg(m_radius, 0, 'f', 3).arg(2.0 * m_radius, 0, 'f', 3);
+        .arg(m_radius, 0, 'f', 3)
+        .arg(circleDiameter(m_radius), 0, 'f', 3)
+        .arg(circleCircumference(m_radius), 0, 'f', 3)
+        .arg(circleArea(m_radius), 0, 'f', 3);
+}
+
+EllipseEntity::EllipseEntity(int id, Vec2 center, double semiMajor, double semiMinor,
+                           const QString& layer)
+    : Entity(id, EntityType::Ellipse, layer),
+      m_center(center),
+      m_semiMajor(semiMajor),
+      m_semiMinor(semiMinor)
+{}
+
+void EllipseEntity::draw(QPainter& painter, double scale) const
+{
+    painter.setPen(entityPen(selected(), scale));
+    painter.drawEllipse(toQPoint(m_center), m_semiMajor, m_semiMinor);
+}
+
+bool EllipseEntity::hitTest(const Vec2& world, double tolerance) const
+{
+    const double dx = world.x - m_center.x;
+    const double dy = world.y - m_center.y;
+    const double normalized = (dx * dx) / (m_semiMajor * m_semiMajor)
+                           + (dy * dy) / (m_semiMinor * m_semiMinor);
+    return std::abs(normalized - 1.0) <= tolerance / std::max(m_semiMajor, m_semiMinor);
+}
+
+QVector<Vec2> EllipseEntity::snapPoints() const
+{
+    return {m_center};
+}
+
+QJsonObject EllipseEntity::toJson() const
+{
+    return {
+        {"type", "ELLIPSE"}, {"id", id()}, {"layer", layer()},
+        {"cx", m_center.x}, {"cy", m_center.y},
+        {"semiMajor", m_semiMajor}, {"semiMinor", m_semiMinor}
+    };
+}
+
+void EllipseEntity::moveBy(const Vec2& delta)
+{
+    m_center = m_center + delta;
+}
+
+QString EllipseEntity::properties() const
+{
+    return QString("ELLIPSE\nID: %1\nLayer: %2\nCenter: (%3, %4)\nSemi-major: %5\nSemi-minor: %6\nMajor diameter: %7\nMinor diameter: %8\nArea: %9\nPerimeter approx.: %10")
+        .arg(id()).arg(layer())
+        .arg(m_center.x, 0, 'f', 3).arg(m_center.y, 0, 'f', 3)
+        .arg(m_semiMajor, 0, 'f', 3)
+        .arg(m_semiMinor, 0, 'f', 3)
+        .arg(ellipseMajorDiameter(m_semiMajor), 0, 'f', 3)
+        .arg(ellipseMinorDiameter(m_semiMinor), 0, 'f', 3)
+        .arg(ellipseArea(m_semiMajor, m_semiMinor), 0, 'f', 3)
+        .arg(ellipsePerimeterApprox(m_semiMajor, m_semiMinor), 0, 'f', 3);
 }
 
 ArcEntity::ArcEntity(int id, Vec2 center, double radius, double startDeg, double endDeg,
