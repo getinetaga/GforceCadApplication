@@ -13,6 +13,7 @@ enum class EntityType
 {
     Line,
     Circle,
+    Ellipse,
     Arc,
     Polyline,
     Rectangle

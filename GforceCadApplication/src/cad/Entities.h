@@ -42,6 +42,25 @@ private:
     double m_radius;
 };
 
+class EllipseEntity final : public Entity
+{
+public:
+    EllipseEntity(int id, Vec2 center, double semiMajor, double semiMinor,
+                 const QString& layer = "0");
+
+    void draw(QPainter& painter, double scale) const override;
+    bool hitTest(const Vec2& world, double tolerance) const override;
+    QVector<Vec2> snapPoints() const override;
+    QJsonObject toJson() const override;
+    void moveBy(const Vec2& delta) override;
+    QString properties() const override;
+
+private:
+    Vec2 m_center;
+    double m_semiMajor;
+    double m_semiMinor;
+};
+
 class ArcEntity final : public Entity
 {
 public:

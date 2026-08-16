@@ -3,6 +3,7 @@
 #include <QPointF>
 #include <cmath>
 #include <algorithm>
+#include <numbers>
 
 namespace GForceCAD {
 
@@ -38,6 +39,44 @@ inline Vec2 snapToGrid(const Vec2& p, double grid)
         std::round(p.x / grid) * grid,
         std::round(p.y / grid) * grid
     };
+}
+
+inline double circleDiameter(double radius)
+{
+    return 2.0 * radius;
+}
+
+inline double circleCircumference(double radius)
+{
+    return 2.0 * std::numbers::pi * radius;
+}
+
+inline double circleArea(double radius)
+{
+    return std::numbers::pi * radius * radius;
+}
+
+inline double ellipseMajorDiameter(double semiMajorAxis)
+{
+    return 2.0 * semiMajorAxis;
+}
+
+inline double ellipseMinorDiameter(double semiMinorAxis)
+{
+    return 2.0 * semiMinorAxis;
+}
+
+inline double ellipseArea(double semiMajorAxis, double semiMinorAxis)
+{
+    return std::numbers::pi * semiMajorAxis * semiMinorAxis;
+}
+
+inline double ellipsePerimeterApprox(double semiMajorAxis, double semiMinorAxis)
+{
+    const double a = semiMajorAxis;
+    const double b = semiMinorAxis;
+    const double meanSquares = (a * a + b * b) / 2.0;
+    return 2.0 * std::numbers::pi * std::sqrt(meanSquares);
 }
 
 inline double clamp(double value, double low, double high)

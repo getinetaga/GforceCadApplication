@@ -338,6 +338,18 @@ void CadViewport::drawPreview(QPainter& painter) const
         }
         break;
 
+    case ToolType::Ellipse:
+        if (points.size() == 2) {
+            const Vec2 center = points[0];
+            const double semiMajor = std::abs(preview.x - center.x);
+            const double semiMinor = std::abs((points.size() == 2 ? preview.y : center.y) - center.y);
+            painter.drawEllipse(toQPoint(center), semiMajor, semiMinor);
+        }
+        if (points.size() == 1) {
+            painter.drawLine(toQPoint(points[0]), toQPoint(preview));
+        }
+        break;
+
     case ToolType::Arc:
         if (points.size() == 2) {
             const Vec2 center = points[0];
