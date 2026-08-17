@@ -338,6 +338,11 @@ void CadViewport::drawPreview(QPainter& painter) const
         }
         break;
 
+    case ToolType::Tangent:
+        if (points.size() == 1)
+            painter.drawLine(toQPoint(points[0]), toQPoint(preview));
+        break;
+
     case ToolType::Ellipse:
         if (points.size() == 2) {
             const Vec2 center = points[0];

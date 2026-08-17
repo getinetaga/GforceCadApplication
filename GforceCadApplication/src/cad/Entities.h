@@ -19,6 +19,7 @@ public:
     QVector<Vec2> snapPoints() const override;
     QJsonObject toJson() const override;
     void moveBy(const Vec2& delta) override;
+    void scaleBy(double factor, const Vec2& origin) override;
     QString properties() const override;
 
 private:
@@ -30,11 +31,15 @@ class CircleEntity final : public Entity
 public:
     CircleEntity(int id, Vec2 center, double radius, const QString& layer = "0");
 
+    Vec2 center() const { return m_center; }
+    double radius() const { return m_radius; }
+
     void draw(QPainter& painter, double scale) const override;
     bool hitTest(const Vec2& world, double tolerance) const override;
     QVector<Vec2> snapPoints() const override;
     QJsonObject toJson() const override;
     void moveBy(const Vec2& delta) override;
+    void scaleBy(double factor, const Vec2& origin) override;
     QString properties() const override;
 
 private:
@@ -53,6 +58,7 @@ public:
     QVector<Vec2> snapPoints() const override;
     QJsonObject toJson() const override;
     void moveBy(const Vec2& delta) override;
+    void scaleBy(double factor, const Vec2& origin) override;
     QString properties() const override;
 
 private:
@@ -82,6 +88,7 @@ public:
     QVector<Vec2> snapPoints() const override;
     QJsonObject toJson() const override;
     void moveBy(const Vec2& delta) override;
+    void scaleBy(double factor, const Vec2& origin) override;
     QString properties() const override;
 
 private:
@@ -112,6 +119,7 @@ public:
     QVector<Vec2> snapPoints() const override;
     QJsonObject toJson() const override;
     void moveBy(const Vec2& delta) override;
+    void scaleBy(double factor, const Vec2& origin) override;
     QString properties() const override;
 
 private:
@@ -139,6 +147,7 @@ public:
     QVector<Vec2> snapPoints() const override;
     QJsonObject toJson() const override;
     void moveBy(const Vec2& delta) override;
+    void scaleBy(double factor, const Vec2& origin) override;
     QString properties() const override;
 
 private:
@@ -167,6 +176,7 @@ public:
     QVector<Vec2> snapPoints() const override;
     QJsonObject toJson() const override;
     void moveBy(const Vec2& delta) override;
+    void scaleBy(double factor, const Vec2& origin) override;
     QString properties() const override;
 
 private:

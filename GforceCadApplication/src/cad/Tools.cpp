@@ -102,6 +102,37 @@ double positiveDelta(double from, double to)
     return d;
 }
 
+bool angleOnArc(double angleDeg, double startDeg, double endDeg);
+
+bool tangentPointOnArc(const Vec2& point, const Vec2& center,
+                       double startDeg, double endDeg)
+{
+    const double angle = normalizeAngle(degrees(std::atan2(
+        point.y - center.y, point.x - center.x
+    )));
+    return angleOnArc(angle, startDeg, endDeg);
+}
+
+QVector<Vec2> tangentPoints(const Vec2& external, const Vec2& center, double radius)
+{
+    QVector<Vec2> points;
+    const Vec2 offset = external - center;
+    const double distanceSquared = dot(offset, offset);
+    const double radiusSquared = radius * radius;
+
+    if (distanceSquared <= radiusSquared + 1e-9)
+        return points;
+
+    const double scale = radiusSquared / distanceSquared;
+    const double tangentScale = radius * std::sqrt(distanceSquared - radiusSquared) / distanceSquared;
+    const Vec2 base = center + offset * scale;
+    const Vec2 perpendicular{-offset.y, offset.x};
+
+    points.append(base + perpendicular * tangentScale);
+    points.append(base - perpendicular * tangentScale);
+    return points;
+}
+
 bool angleOnArc(double angleDeg, double startDeg, double endDeg)
 {
     const double span = positiveDelta(startDeg, endDeg);
@@ -612,6 +643,41 @@ bool ToolController::click(const Vec2& point)
         }
         return true;
 
+    case ToolType::Tangent:
+        m_points.append(point);
+
+        if (m_points.size() == 2) {
+            const Vec2 external = m_points[0];
+            const Vec2 targetPick = m_points[1];
+            auto entity = m_document.entityAt(targetPick, 8.0);
+            QVector<Vec2> candidates;
+
+            if (auto circle = std::dynamic_pointer_cast<CircleEntity>(entity)) {
+                candidates = tangentPoints(external, circle->center(), circle->radius());
+            } else if (auto arc = std::dynamic_pointer_cast<ArcEntity>(entity)) {
+                const QVector<Vec2> arcCandidates = tangentPoints(
+                    external, arc->center(), arc->radius()
+                );
+                for (const Vec2& candidate : arcCandidates) {
+                    if (tangentPointOnArc(candidate, arc->center(), arc->startDeg(), arc->endDeg()))
+                        candidates.append(candidate);
+                }
+            }
+
+            if (!candidates.isEmpty()) {
+                const Vec2 tangent = candidates.size() == 1 ||
+                    distance(candidates[0], targetPick) <= distance(candidates[1], targetPick)
+                    ? candidates[0] : candidates[1];
+
+                m_document.add(std::make_shared<LineEntity>(
+                    m_document.nextId(), external, tangent, m_document.currentLayer()
+                ));
+            }
+
+            m_points.clear();
+        }
+        return true;
+
     case ToolType::Ellipse:
         m_points.append(point);
 
@@ -1109,6 +1175,10 @@ QString ToolController::prompt() const
         return m_points.isEmpty() ? "Specify first point" : "Specify second point";
     case ToolType::Circle:
         return m_points.isEmpty() ? "Specify center" : "Specify radius";
+    case ToolType::Tangent:
+        return m_points.isEmpty()
+            ? "Specify external point"
+            : "Select circle or arc for tangent line";
     case ToolType::Ellipse:
         if (m_points.isEmpty()) return "Specify center";
         if (m_points.size() == 1) return "Specify major radius";

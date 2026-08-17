@@ -47,6 +47,7 @@ private:
     void updateStatus();
     void updateLayerPanel();
     void updateCommandPrompt();
+    void scaleSelected(double factor);
 
     Document m_document;
     ToolController m_tools;

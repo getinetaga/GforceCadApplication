@@ -10,6 +10,7 @@ enum class ToolType
     Select,
     Line,
     Circle,
+    Tangent,
     Ellipse,
     Arc,
     Polyline,
