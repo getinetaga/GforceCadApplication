@@ -16,7 +16,9 @@ enum class EntityType
     Ellipse,
     Arc,
     Polyline,
-    Rectangle
+    Rectangle,
+    Polygon,
+    Triangle
 };
 
 class Entity

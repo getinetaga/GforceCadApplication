@@ -683,6 +683,22 @@ bool ToolController::click(const Vec2& point)
         }
         return true;
 
+    case ToolType::Polygon:
+        if (!m_points.isEmpty() && m_points.size() >= 3 &&
+            distance(m_points.first(), point) < 1e-9) {
+            m_document.add(
+                std::make_shared<PolygonEntity>(
+                    m_document.nextId(),
+                    m_points,
+                    m_document.currentLayer()
+                )
+            );
+            m_points.clear();
+        } else {
+            m_points.append(point);
+        }
+        return true;
+
     case ToolType::Rectangle:
         m_points.append(point);
 
@@ -1103,6 +1119,10 @@ QString ToolController::prompt() const
         return "Specify end point";
     case ToolType::Polyline:
         return "Specify next point; click the last point to finish";
+    case ToolType::Polygon:
+        return m_points.isEmpty()
+            ? "Specify first vertex"
+            : (m_points.size() < 3 ? "Specify next vertex" : "Click the first vertex to close the polygon");
     case ToolType::Rectangle:
         return m_points.isEmpty() ? "Specify first corner" : "Specify opposite corner";
     case ToolType::Offset:

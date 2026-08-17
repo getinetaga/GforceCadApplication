@@ -108,6 +108,7 @@ void MainWindow::buildToolbars()
     addTool("Ellipse", ToolType::Ellipse);
     addTool("Arc", ToolType::Arc);
     addTool("Polyline", ToolType::Polyline);
+    addTool("Polygon", ToolType::Polygon);
     addTool("Rectangle", ToolType::Rectangle);
 
     toolbar->addSeparator();
@@ -339,6 +340,7 @@ void MainWindow::runCommand()
     else if (command == "ELLIPSE" || keyword == "E") chooseTool(ToolType::Ellipse);
     else if (command == "ARC" || keyword == "A") chooseTool(ToolType::Arc);
     else if (command == "POLYLINE" || command == "PLINE") chooseTool(ToolType::Polyline);
+    else if (command == "POLYGON" || command == "PGON") chooseTool(ToolType::Polygon);
     else if (command == "RECTANGLE" || command == "RECTANG" || keyword == "REC") chooseTool(ToolType::Rectangle);
     else if (command == "SELECT") chooseTool(ToolType::Select);
     else if (keyword == "OFFSET" || keyword == "O") {

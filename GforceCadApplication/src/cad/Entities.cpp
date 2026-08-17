@@ -238,6 +238,178 @@ QString ArcEntity::properties() const
         .arg(m_startDeg, 0, 'f', 2).arg(m_endDeg, 0, 'f', 2);
 }
 
+TriangleEntity::TriangleEntity(int id, const QVector<Vec2>& points,
+                             const QString& layer)
+    : Entity(id, EntityType::Triangle, layer), m_points(points) {}
+
+void TriangleEntity::draw(QPainter& painter, double scale) const
+{
+    if (m_points.size() < 3) return;
+
+    painter.setPen(entityPen(selected(), scale));
+
+    QPainterPath path;
+    path.moveTo(toQPoint(m_points[0]));
+    path.lineTo(toQPoint(m_points[1]));
+    path.lineTo(toQPoint(m_points[2]));
+    path.closeSubpath();
+    painter.drawPath(path);
+}
+
+bool TriangleEntity::hitTest(const Vec2& world, double tolerance) const
+{
+    if (m_points.size() < 3) return false;
+
+    for (int i = 1; i < m_points.size(); ++i) {
+        if (pointSegmentDistance(world, m_points[i - 1], m_points[i]) <= tolerance)
+            return true;
+    }
+
+    return pointSegmentDistance(world, m_points.last(), m_points.first()) <= tolerance;
+}
+
+QVector<Vec2> TriangleEntity::snapPoints() const
+{
+    QVector<Vec2> points = m_points;
+
+    for (int i = 1; i < m_points.size(); ++i) {
+        const Vec2& a = m_points[i - 1];
+        const Vec2& b = m_points[i];
+        points.append({(a.x + b.x) * 0.5, (a.y + b.y) * 0.5});
+    }
+
+    const Vec2& a = m_points.last();
+    const Vec2& b = m_points.first();
+    points.append({(a.x + b.x) * 0.5, (a.y + b.y) * 0.5});
+
+    return points;
+}
+
+QJsonObject TriangleEntity::toJson() const
+{
+    QJsonArray points;
+
+    for (const Vec2& p : m_points)
+        points.append(QJsonObject{{"x", p.x}, {"y", p.y}});
+
+    return {
+        {"type", "TRIANGLE"},
+        {"id", id()},
+        {"layer", layer()},
+        {"points", points}
+    };
+}
+
+void TriangleEntity::moveBy(const Vec2& delta)
+{
+    for (Vec2& p : m_points)
+        p = p + delta;
+}
+
+QString TriangleEntity::properties() const
+{
+    if (m_points.size() < 3) {
+        return QString("TRIANGLE\nID: %1\nLayer: %2\nIncomplete triangle").arg(id()).arg(layer());
+    }
+
+    const double side1 = distance(m_points[0], m_points[1]);
+    const double side2 = distance(m_points[1], m_points[2]);
+    const double side3 = distance(m_points[2], m_points[0]);
+    const double perimeter = trianglePerimeter(m_points[0], m_points[1], m_points[2]);
+    const double area = triangleArea(m_points[0], m_points[1], m_points[2]);
+
+    return QString("TRIANGLE\nID: %1\nLayer: %2\nVertex A: (%3, %4)\nVertex B: (%5, %6)\nVertex C: (%7, %8)\nSide AB: %9\nSide BC: %10\nSide CA: %11\nPerimeter: %12\nArea: %13")
+        .arg(id()).arg(layer())
+        .arg(m_points[0].x, 0, 'f', 3).arg(m_points[0].y, 0, 'f', 3)
+        .arg(m_points[1].x, 0, 'f', 3).arg(m_points[1].y, 0, 'f', 3)
+        .arg(m_points[2].x, 0, 'f', 3).arg(m_points[2].y, 0, 'f', 3)
+        .arg(side1, 0, 'f', 3)
+        .arg(side2, 0, 'f', 3)
+        .arg(side3, 0, 'f', 3)
+        .arg(perimeter, 0, 'f', 3)
+        .arg(area, 0, 'f', 3);
+}
+
+PolygonEntity::PolygonEntity(int id, const QVector<Vec2>& points,
+                           const QString& layer)
+    : Entity(id, EntityType::Polygon, layer), m_points(points) {}
+
+void PolygonEntity::draw(QPainter& painter, double scale) const
+{
+    if (m_points.size() < 3) return;
+
+    painter.setPen(entityPen(selected(), scale));
+
+    QPainterPath path;
+    path.moveTo(toQPoint(m_points.first()));
+
+    for (int i = 1; i < m_points.size(); ++i)
+        path.lineTo(toQPoint(m_points[i]));
+
+    path.closeSubpath();
+    painter.drawPath(path);
+}
+
+bool PolygonEntity::hitTest(const Vec2& world, double tolerance) const
+{
+    for (int i = 1; i < m_points.size(); ++i) {
+        if (pointSegmentDistance(world, m_points[i - 1], m_points[i]) <= tolerance)
+            return true;
+    }
+
+    if (m_points.size() > 2 &&
+        pointSegmentDistance(world, m_points.last(), m_points.first()) <= tolerance)
+        return true;
+
+    return false;
+}
+
+QVector<Vec2> PolygonEntity::snapPoints() const
+{
+    QVector<Vec2> points = m_points;
+
+    for (int i = 1; i < m_points.size(); ++i) {
+        const Vec2& a = m_points[i - 1];
+        const Vec2& b = m_points[i];
+        points.append({(a.x + b.x) * 0.5, (a.y + b.y) * 0.5});
+    }
+
+    if (m_points.size() > 2) {
+        const Vec2& a = m_points.last();
+        const Vec2& b = m_points.first();
+        points.append({(a.x + b.x) * 0.5, (a.y + b.y) * 0.5});
+    }
+
+    return points;
+}
+
+QJsonObject PolygonEntity::toJson() const
+{
+    QJsonArray points;
+
+    for (const Vec2& p : m_points)
+        points.append(QJsonObject{{"x", p.x}, {"y", p.y}});
+
+    return {
+        {"type", "POLYGON"},
+        {"id", id()},
+        {"layer", layer()},
+        {"points", points}
+    };
+}
+
+void PolygonEntity::moveBy(const Vec2& delta)
+{
+    for (Vec2& p : m_points)
+        p = p + delta;
+}
+
+QString PolygonEntity::properties() const
+{
+    return QString("POLYGON\nID: %1\nLayer: %2\nVertices: %3")
+        .arg(id()).arg(layer()).arg(m_points.size());
+}
+
 PolylineEntity::PolylineEntity(int id, const QVector<Vec2>& points,
                                const QString& layer, bool closed)
     : Entity(id, closed ? EntityType::Rectangle : EntityType::Polyline, layer),

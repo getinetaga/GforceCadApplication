@@ -91,6 +91,60 @@ private:
     double m_endDeg;
 };
 
+class TriangleEntity final : public Entity
+{
+public:
+    TriangleEntity(int id, const QVector<Vec2>& points,
+                   const QString& layer = "0");
+
+    const QVector<Vec2>& points() const { return m_points; }
+    void setPoint(int index, const Vec2& value)
+    {
+        if (index >= 0 && index < m_points.size()) m_points[index] = value;
+    }
+    void setPoints(const QVector<Vec2>& points)
+    {
+        m_points = points;
+    }
+
+    void draw(QPainter& painter, double scale) const override;
+    bool hitTest(const Vec2& world, double tolerance) const override;
+    QVector<Vec2> snapPoints() const override;
+    QJsonObject toJson() const override;
+    void moveBy(const Vec2& delta) override;
+    QString properties() const override;
+
+private:
+    QVector<Vec2> m_points;
+};
+
+class PolygonEntity final : public Entity
+{
+public:
+    PolygonEntity(int id, const QVector<Vec2>& points,
+                  const QString& layer = "0");
+
+    const QVector<Vec2>& points() const { return m_points; }
+    void setPoint(int index, const Vec2& value)
+    {
+        if (index >= 0 && index < m_points.size()) m_points[index] = value;
+    }
+    void setPoints(const QVector<Vec2>& points)
+    {
+        m_points = points;
+    }
+
+    void draw(QPainter& painter, double scale) const override;
+    bool hitTest(const Vec2& world, double tolerance) const override;
+    QVector<Vec2> snapPoints() const override;
+    QJsonObject toJson() const override;
+    void moveBy(const Vec2& delta) override;
+    QString properties() const override;
+
+private:
+    QVector<Vec2> m_points;
+};
+
 class PolylineEntity final : public Entity
 {
 public:

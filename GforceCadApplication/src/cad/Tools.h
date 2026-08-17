@@ -13,6 +13,7 @@ enum class ToolType
     Ellipse,
     Arc,
     Polyline,
+    Polygon,
     Rectangle,
     Offset,
     Trim,

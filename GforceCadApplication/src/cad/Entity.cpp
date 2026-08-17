@@ -54,6 +54,28 @@ std::shared_ptr<Entity> Entity::fromJson(const QJsonObject& o)
         );
     }
 
+    if (type == "TRIANGLE") {
+        QVector<Vec2> points;
+        const QJsonArray array = o["points"].toArray();
+        for (const auto& value : array) {
+            const QJsonObject p = value.toObject();
+            points.append({p["x"].toDouble(), p["y"].toDouble()});
+        }
+
+        return std::make_shared<TriangleEntity>(id, points, layer);
+    }
+
+    if (type == "POLYGON") {
+        QVector<Vec2> points;
+        const QJsonArray array = o["points"].toArray();
+        for (const auto& value : array) {
+            const QJsonObject p = value.toObject();
+            points.append({p["x"].toDouble(), p["y"].toDouble()});
+        }
+
+        return std::make_shared<PolygonEntity>(id, points, layer);
+    }
+
     if (type == "POLYLINE" || type == "RECTANGLE") {
         QVector<Vec2> points;
         const QJsonArray array = o["points"].toArray();

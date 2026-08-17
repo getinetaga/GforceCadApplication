@@ -376,6 +376,19 @@ void CadViewport::drawPreview(QPainter& painter) const
         }
         break;
 
+    case ToolType::Polygon:
+        if (!points.isEmpty()) {
+            for (int i = 1; i < points.size(); ++i)
+                painter.drawLine(toQPoint(points[i - 1]), toQPoint(points[i]));
+
+            if (points.size() >= 2)
+                painter.drawLine(toQPoint(points.first()), toQPoint(preview));
+
+            if (points.size() >= 2)
+                painter.drawLine(toQPoint(points.last()), toQPoint(preview));
+        }
+        break;
+
     case ToolType::Rectangle:
         if (points.size() == 1) {
             const Vec2 a = points[0];
