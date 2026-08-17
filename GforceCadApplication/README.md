@@ -41,6 +41,21 @@ Qt's `QOpenGLWidget` is used as the rendering viewport. Qt documents `QOpenGLWid
 - Coordinate/status display
 - Dark CAD-style interface
 
+## Advanced CAD capability layer
+
+This app is structured to evolve toward a more complete engineering CAD workflow with the following capabilities:
+
+- Boolean operations: union, subtract, and intersection planning for future solid workflows
+- Solid modeling: foundation for 3D geometry and volume-aware modeling primitives
+- Mesh generation: triangle-based mesh structures and surface tessellation hooks
+- Rendering: viewport pipeline for 2D drafting plus extensibility toward shaded or triangulated displays
+- Coordinate transformations: 2D/3D transform support for pan, rotation, scaling, and model-to-world operations
+- Collision/intersection calculations: segment, circle, triangle, and polygon intersection helpers
+- Large drawings and assemblies: document structure prepared for layered, scalable drawings and multi-part design work
+- File formats: import/export compatibility planning for DWG, DXF, STEP, and IGES workflows
+
+This is intentionally implemented as an architecture-ready foundation rather than a full industrial CAD kernel. Production-grade solid modeling and file interoperability should rely on a dedicated kernel such as Open CASCADE Technology when full B-Rep and native import/export support are required.
+
 ## Build on Windows
 
 Install:

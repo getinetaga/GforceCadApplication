@@ -16,7 +16,9 @@ enum class EntityType
     Ellipse,
     Arc,
     Polyline,
-    Rectangle
+    Rectangle,
+    Polygon,
+    Triangle
 };
 
 class Entity
@@ -39,6 +41,7 @@ public:
     virtual QVector<Vec2> snapPoints() const = 0;
     virtual QJsonObject toJson() const = 0;
     virtual void moveBy(const Vec2& delta) = 0;
+    virtual void scaleBy(double factor, const Vec2& origin) = 0;
     virtual QString properties() const = 0;
 
     static std::shared_ptr<Entity> fromJson(const QJsonObject& object);

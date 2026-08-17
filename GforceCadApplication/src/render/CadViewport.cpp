@@ -338,6 +338,11 @@ void CadViewport::drawPreview(QPainter& painter) const
         }
         break;
 
+    case ToolType::Tangent:
+        if (points.size() == 1)
+            painter.drawLine(toQPoint(points[0]), toQPoint(preview));
+        break;
+
     case ToolType::Ellipse:
         if (points.size() == 2) {
             const Vec2 center = points[0];
@@ -373,6 +378,19 @@ void CadViewport::drawPreview(QPainter& painter) const
                 painter.drawLine(toQPoint(points[i - 1]), toQPoint(points[i]));
 
             painter.drawLine(toQPoint(points.last()), toQPoint(preview));
+        }
+        break;
+
+    case ToolType::Polygon:
+        if (!points.isEmpty()) {
+            for (int i = 1; i < points.size(); ++i)
+                painter.drawLine(toQPoint(points[i - 1]), toQPoint(points[i]));
+
+            if (points.size() >= 2)
+                painter.drawLine(toQPoint(points.first()), toQPoint(preview));
+
+            if (points.size() >= 2)
+                painter.drawLine(toQPoint(points.last()), toQPoint(preview));
         }
         break;
 

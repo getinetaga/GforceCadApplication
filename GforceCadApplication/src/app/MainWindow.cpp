@@ -21,6 +21,7 @@
 #include <QWidget>
 #include <QFileInfo>
 #include <QStringList>
+#include <algorithm>
 
 namespace GForceCAD {
 
@@ -105,9 +106,11 @@ void MainWindow::buildToolbars()
     toolbar->addSeparator();
     addTool("Line", ToolType::Line);
     addTool("Circle", ToolType::Circle);
+    addTool("Tangent", ToolType::Tangent);
     addTool("Ellipse", ToolType::Ellipse);
     addTool("Arc", ToolType::Arc);
     addTool("Polyline", ToolType::Polyline);
+    addTool("Polygon", ToolType::Polygon);
     addTool("Rectangle", ToolType::Rectangle);
 
     toolbar->addSeparator();
@@ -117,6 +120,14 @@ void MainWindow::buildToolbars()
     addTool("Extend", ToolType::Extend);
     addTool("Fillet", ToolType::Fillet);
     addTool("Chamfer", ToolType::Chamfer);
+
+    toolbar->addAction("Scale...", this, [this]() {
+        bool ok = false;
+        const double factor = QInputDialog::getDouble(
+            this, "Scale Selected", "Scale factor:", 1.0, 0.001, 1000.0, 3, &ok
+        );
+        if (ok) scaleSelected(factor);
+    });
 
     toolbar->addSeparator();
 
@@ -312,6 +323,36 @@ void MainWindow::updateProperties()
     updateStatus();
 }
 
+void MainWindow::scaleSelected(double factor)
+{
+    auto entity = m_document.selectedEntity();
+    if (!entity || factor <= 0.0) {
+        statusBar()->showMessage("Select an object and enter a positive scale factor.", 3000);
+        return;
+    }
+
+    const QVector<Vec2> points = entity->snapPoints();
+    if (points.isEmpty()) return;
+
+    double minX = points.first().x;
+    double maxX = minX;
+    double minY = points.first().y;
+    double maxY = minY;
+    for (const Vec2& point : points) {
+        minX = std::min(minX, point.x);
+        maxX = std::max(maxX, point.x);
+        minY = std::min(minY, point.y);
+        maxY = std::max(maxY, point.y);
+    }
+
+    m_document.beginEdit();
+    entity->scaleBy(factor, {(minX + maxX) * 0.5, (minY + maxY) * 0.5});
+    m_dirty = true;
+    m_viewport->update();
+    updateProperties();
+    statusBar()->showMessage(QString("Scaled object by %1.").arg(factor, 0, 'f', 3), 3000);
+}
+
 void MainWindow::setLayerFromPanel(int index)
 {
     if (index < 0 || index >= m_layerCombo->count()) return;
@@ -336,11 +377,18 @@ void MainWindow::runCommand()
 
     if (command == "LINE" || keyword == "L") chooseTool(ToolType::Line);
     else if (command == "CIRCLE" || keyword == "C") chooseTool(ToolType::Circle);
+    else if (command == "TANGENT" || keyword == "TAN") chooseTool(ToolType::Tangent);
     else if (command == "ELLIPSE" || keyword == "E") chooseTool(ToolType::Ellipse);
     else if (command == "ARC" || keyword == "A") chooseTool(ToolType::Arc);
     else if (command == "POLYLINE" || command == "PLINE") chooseTool(ToolType::Polyline);
+    else if (command == "POLYGON" || command == "PGON") chooseTool(ToolType::Polygon);
     else if (command == "RECTANGLE" || command == "RECTANG" || keyword == "REC") chooseTool(ToolType::Rectangle);
     else if (command == "SELECT") chooseTool(ToolType::Select);
+    else if (keyword == "SCALE" || keyword == "SC") {
+        const double factor = tokenDouble(1, 0.0);
+        if (factor > 0.0) scaleSelected(factor);
+        else statusBar()->showMessage("Usage: SCALE <positive factor>", 3000);
+    }
     else if (keyword == "OFFSET" || keyword == "O") {
         m_tools.setOffsetDistance(tokenDouble(1, m_tools.offsetDistance()));
         chooseTool(ToolType::Offset);

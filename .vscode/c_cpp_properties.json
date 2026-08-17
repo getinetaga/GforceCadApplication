@@ -1,0 +1,47 @@
+{
+  "configurations": [
+    {
+      "name": "Qt-MSVC-x64",
+      "includePath": [
+        "${workspaceFolder}/src/**",
+        "${workspaceFolder}/**",
+        "C:/Qt/6.9.3/msvc2022_64/include/**",
+        "C:/Qt/6.9.3/msvc2022_64/include/QtCore/**",
+        "C:/Qt/6.9.3/msvc2022_64/include/QtGui/**",
+        "C:/Qt/6.9.3/msvc2022_64/include/QtWidgets/**",
+        "C:/Qt/6.9.3/msvc2022_64/include/QtOpenGL/**",
+        "C:/Qt/6.9.3/msvc2022_64/include/QtOpenGLWidgets/**",
+        "C:/Qt/6.9.3/msvc2022_64/include/QtPrintSupport/**",
+        "C:/Qt/6.9.3/msvc2022_64/include/QtNetwork/**",
+        "C:/Qt/6.9.3/msvc2022_64/include/QtXml/**",
+        "C:/Qt/6.9.3/msvc2022_64/include/QtSql/**",
+        "C:/Qt/6.9.3/msvc2022_64/include/QtTest/**"
+      ],
+      "defines": [
+        "QT_CORE_LIB",
+        "QT_GUI_LIB",
+        "QT_WIDGETS_LIB",
+        "QT_OPENGL_LIB",
+        "QT_OPENGLWIDGETS_LIB",
+        "UNICODE",
+        "_UNICODE",
+        "WIN32"
+      ],
+      "compilerPath": "cl.exe",
+      "intelliSenseMode": "windows-msvc-x64",
+      "browse": {
+        "path": [
+          "${workspaceFolder}",
+          "C:/Qt/6.9.3/msvc2022_64/include",
+          "C:/Qt/6.9.3/msvc2022_64/include/QtCore",
+          "C:/Qt/6.9.3/msvc2022_64/include/QtGui",
+          "C:/Qt/6.9.3/msvc2022_64/include/QtWidgets",
+          "C:/Qt/6.9.3/msvc2022_64/include/QtOpenGL",
+          "C:/Qt/6.9.3/msvc2022_64/include/QtOpenGLWidgets"
+        ],
+        "limitSymbolsToIncludedHeaders": true
+      }
+    }
+  ],
+  "version": 4
+}
