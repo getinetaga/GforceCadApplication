@@ -1,3 +1,5 @@
+// Editing and drafting logic for the CAD tool system.
+// Implements geometry-aware creation, intersection search, and preview-driven modification operations.
 #include "Tools.h"
 #include "Entities.h"
 #include <cmath>

@@ -1,3 +1,5 @@
+// Entity deserialization logic for the CAD document.
+// Rebuilds concrete geometry objects from the JSON representation stored in the drawing file.
 #include "Entity.h"
 #include "Entities.h"
 #include <QJsonArray>

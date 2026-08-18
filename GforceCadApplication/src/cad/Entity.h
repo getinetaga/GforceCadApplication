@@ -1,5 +1,7 @@
 #pragma once
 
+// Base interface for all CAD entities.
+// Defines the shared geometry API for drawing, hit testing, snapping, JSON serialization, and editing.
 #include "Geometry.h"
 #include <QPainter>
 #include <QJsonObject>

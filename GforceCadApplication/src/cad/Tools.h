@@ -1,5 +1,7 @@
 #pragma once
 
+// CAD tool controller and command state.
+// Tracks active tools, cursor previews, and editing actions such as trim, extend, fillet, and chamfer.
 #include "Document.h"
 #include <memory>
 

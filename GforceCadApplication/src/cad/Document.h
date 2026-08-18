@@ -1,5 +1,7 @@
 #pragma once
 
+// CAD document model for a layered drawing.
+// Stores entities, undo/redo snapshots, layer metadata, and JSON persistence for the design file.
 #include "Entity.h"
 #include <QJsonDocument>
 #include <QSet>

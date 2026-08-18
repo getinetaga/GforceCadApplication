@@ -1,3 +1,5 @@
+// Rendering and interaction implementation for the CAD viewport.
+// Draws the model, grid, previews, and snap markers while responding to mouse and keyboard input.
 #include "CadViewport.h"
 #include <QPainter>
 #include <QMouseEvent>

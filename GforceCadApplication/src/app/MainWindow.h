@@ -1,5 +1,7 @@
 #pragma once
 
+// Main window for the GForce CAD application.
+// Owns the document, tool controller, viewport, and UI panels used for drafting and editing.
 #include <QMainWindow>
 #include "../cad/Document.h"
 #include "../cad/Tools.h"

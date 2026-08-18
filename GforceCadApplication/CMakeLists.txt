@@ -1,3 +1,5 @@
+# GForce CAD Application build definition.
+# Configures the Qt 6/CMake project, source files, and OpenGL dependencies for the CAD editor.
 cmake_minimum_required(VERSION 3.21)
 
 project(GforceCadApplication VERSION 0.1.0 LANGUAGES CXX)

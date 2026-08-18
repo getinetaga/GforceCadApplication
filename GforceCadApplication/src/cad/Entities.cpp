@@ -1,3 +1,5 @@
+// Geometry implementation for each CAD primitive.
+// Handles drawing, hit testing, snap points, move/scale edits, and JSON serialization for all entity types.
 #include "Entities.h"
 #include <QPen>
 #include <QPainterPath>

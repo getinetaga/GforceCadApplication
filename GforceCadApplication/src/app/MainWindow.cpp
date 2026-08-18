@@ -1,3 +1,5 @@
+// Main window implementation for the GForce CAD editor.
+// Builds the menu system, toolbars, dock panels, file operations, and command-driven editing workflow.
 #include "MainWindow.h"
 #include "../render/CadViewport.h"
 
@@ -25,7 +27,7 @@
 
 namespace GForceCAD {
 
-MainWindow::MainWindow(QWidget* parent)
+MainWindow::MainWindow(QWidget* parent) // Constructor for the main window of the application
     : QMainWindow(parent),
       m_tools(m_document)
 {

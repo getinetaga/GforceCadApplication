@@ -1,3 +1,5 @@
+// Application entry point for the GForce CAD editor.
+// Initializes Qt, configures the OpenGL rendering context, and launches the main window.
 #include <QApplication>
 #include <QSurfaceFormat>
 #include "app/MainWindow.h"

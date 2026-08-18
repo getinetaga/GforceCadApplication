@@ -1,5 +1,7 @@
 #pragma once
 
+// Shared geometry utilities used by the CAD engine.
+// Contains vector math, transforms, primitive calculations, and helper functions for modeling and editing.
 #include <QPointF>
 #include <QVector>
 #include <cmath>

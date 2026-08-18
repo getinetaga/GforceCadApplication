@@ -1,5 +1,7 @@
 #pragma once
 
+// OpenGL viewport for rendering the CAD document.
+// Handles world/screen transforms, zoom, pan, grid, snap, and interactive cursor feedback.
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
 #include <QPointF>

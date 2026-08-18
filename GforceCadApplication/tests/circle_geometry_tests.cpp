@@ -1,3 +1,5 @@
+// Minimal regression test for circle geometry helpers.
+// Verifies the diameter, circumference, and area formulas used by the CAD math layer.
 #include <cmath>
 #include <cstdlib>
 #include <numbers>

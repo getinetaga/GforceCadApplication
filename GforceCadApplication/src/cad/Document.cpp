@@ -1,3 +1,5 @@
+// Document implementation for the GForce CAD model.
+// Manages entity state, layer creation, file save/load, and snapshot-based undo/redo behavior.
 #include "Document.h"
 #include <QFile>
 #include <QJsonArray>

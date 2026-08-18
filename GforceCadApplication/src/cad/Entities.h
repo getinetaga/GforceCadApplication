@@ -1,5 +1,7 @@
 #pragma once
 
+// Concrete 2D geometry primitives for the CAD document.
+// Declares line, circle, arc, ellipse, polygon, triangle, and polyline entity types.
 #include "Entity.h"
 #include <QVector>
 
